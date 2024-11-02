@@ -35,31 +35,47 @@ type SearchResponse = {
     total: number;
 };
 
-
+// Functions 
 
 async function searchAddress(params: SearchParams): Promise<SearchResponse> {
     try {
-        const {query} = params;
-
+        const response = await api.get(`/search/${params.query}.json`, {
+            params: {
+              limit: params.limit,
+              countrySet: params.countrySet
+            }
+          });
         return {
-            results: [{
-                streetNumber: 100,
-                street: query,
-                city: "Melbourne",
-                state: "VIC",
-                postcode: 3000,
-                country: "Australia"
-            }],
-            total: 1
+            results: response.data.results.map((item: any) => ({
+                street: item.address.streetName || '',
+                city: item.address.municipality || '',
+                state: item.address.countrySubdivision || '',
+                postcode: item.address.postalCode || '',
+                country: item.address.country || ''
+              })),
+              total: response.data.summary.numResults
         };
-    } catch (error) {
-        throw new Error("Search failed");
-    }
+        } 
+        catch (error) {
+          console.error('Error:', error);
+          throw new Error('Search addres error');
+        }
 }
   
-const search = {
-    query: "Haines Street",
-    countrySet: "AU"
-};
+async function testSearch() {
+    try {
+        const result = await searchAddress({
+        query: "Haines Street Melbourne",
+        countrySet: "AU",
+        limit: 5
+        });
+        
+        console.log(JSON.stringify(result, null, 2));
+    } catch (error) {
+        console.error('Search error:', error);
+    }
+}
+
+testSearch();
   
-searchAddress(search).then(console.log);
+
