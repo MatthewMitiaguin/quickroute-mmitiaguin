@@ -1,11 +1,28 @@
+import axios from 'axios';
+import dotenv from 'dotenv';
+
+// API Connection
+dotenv.config();
+
+const api = axios.create({
+    baseURL: 'https://api.tomtom.com/search/2',
+    params: {
+      key: process.env.TOMTOM_API_KEY
+    }
+  });
+
+// Types
+
 type AustralianState = "NSW" | "VIC" | "QLD" | "WA" | "SA" | "TAS" | "NT" | "ACT";
 
 type SearchParams = {
     query: string;
+    countrySet: 'AU';
+    limit?: number;
 };
   
 type AddressResult = {
-    streetNumber: number;
+    streetNumber?: number;
     street: string;
     city: string;
     state: AustralianState;
@@ -17,6 +34,8 @@ type SearchResponse = {
     results: AddressResult[];
     total: number;
 };
+
+
 
 async function searchAddress(params: SearchParams): Promise<SearchResponse> {
     try {
