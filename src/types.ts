@@ -1,6 +1,3 @@
-// src/types.ts
-export type AustralianState = "NSW" | "VIC" | "QLD" | "WA" | "SA" | "TAS" | "NT" | "ACT";
-
 export type AddressProvider = 'tomtom' | 'garmin';
 
 export type ProviderConfig = {
@@ -29,7 +26,7 @@ export type AddressResult = {
     street: string;
     suburb: string;
     city: string;
-    state: AustralianState;
+    state: string;
     postcode: string;
     country: string;
     score: number;

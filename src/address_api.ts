@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { AustralianState, SearchParams, SearchResponse, AddressResult, AddressProvider, ProviderConfig } from './types';
+import {SearchParams, SearchResponse, AddressResult, AddressProvider, ProviderConfig } from './types';
 import { PROVIDER_CONFIGS } from './address_provider';
 
 // Functions
@@ -7,13 +7,13 @@ export function getNestedValue(obj: any, path: string[]): any {
     return path.reduce((current, key) => (current && current[key] !== undefined ? current[key] : ''), obj);
 }
 
-function apiTransformation(item: any, mapping: ProviderConfig['responseMapping']): AddressResult {
+export function apiTransformation(item: any, mapping: ProviderConfig['responseMapping']): AddressResult {
     const result: AddressResult = {
         streetNumber: getNestedValue(item, mapping.streetNumber) || '',
         street: getNestedValue(item, mapping.street) || '',
         suburb: getNestedValue(item, mapping.suburb) || '',
         city: getNestedValue(item, mapping.city) || '',
-        state: (getNestedValue(item, mapping.state) || 'VIC') as AustralianState,
+        state: getNestedValue(item, mapping.state) || '',
         postcode: getNestedValue(item, mapping.postcode) || '',
         country: getNestedValue(item, mapping.country) || 'Australia',
         score: getNestedValue(item, mapping.score) || 0

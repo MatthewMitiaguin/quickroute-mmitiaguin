@@ -6,14 +6,11 @@ dotenv.config();
 async function testAddressService() {
     try {
         const apiKey = process.env.TOMTOM_API_KEY;
-        if (!apiKey) {
-            throw new Error('API KEY not provided');
-        }
-        const addressService = new AddressService(apiKey);
+        const addressService = new AddressService(apiKey!);
 
         console.log('Testing Address Api\n');
 
-        const results = await addressService.search('1 Helopdsa Street');
+        const results = await addressService.search('1 Helopdsa Street South Australia');
         console.log('Results:', JSON.stringify(results, null, 2));
 
     } catch (error) {
