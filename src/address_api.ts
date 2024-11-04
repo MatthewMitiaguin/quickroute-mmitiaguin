@@ -3,7 +3,7 @@ import { AustralianState, SearchParams, SearchResponse, AddressResult, AddressPr
 import { PROVIDER_CONFIGS } from './address_provider';
 
 // Functions
-function getNestedValue(obj: any, path: string[]): any {
+export function getNestedValue(obj: any, path: string[]): any {
     return path.reduce((current, key) => (current && current[key] !== undefined ? current[key] : ''), obj);
 }
 
