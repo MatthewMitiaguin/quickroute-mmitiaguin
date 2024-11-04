@@ -45,7 +45,6 @@ export class AddressService {
             const encodedQuery = encodeURIComponent(searchParams.query);
             const response = await this.api.get(`/search/${searchParams.query}.json`, {
                 params: {
-                    query: searchParams.query,
                     limit: searchParams.limit,
                     countrySet: searchParams.countrySet,
                     typeahead: true
