@@ -43,7 +43,7 @@ export class AddressService {
                 limit: 5
             };
             const encodedQuery = encodeURIComponent(searchParams.query);
-            const response = await this.api.get(`/search/${searchParams.query}.json`, {
+            const response = await this.api.get(`/search/${encodedQuery}.json`, {
                 params: {
                     limit: searchParams.limit,
                     countrySet: searchParams.countrySet,

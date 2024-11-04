@@ -13,7 +13,7 @@ async function testAddressService() {
 
         console.log('Testing Address Api\n');
 
-        const results = await addressService.search('Unit 2 118 Haines Street North Melbourne');
+        const results = await addressService.search('Unit 2 !!!///118 Haines Street North Melbourne');
         console.log('Results:', JSON.stringify(results, null, 2));
 
     } catch (error) {
