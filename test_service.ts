@@ -7,7 +7,7 @@ async function testAddressService() {
     try {
         const apiKey = process.env.TOMTOM_API_KEY;
         if (!apiKey) {
-            throw new Error('APiKey undefined');
+            throw new Error('API KEY not provided');
         }
         const addressService = new AddressService(apiKey);
 

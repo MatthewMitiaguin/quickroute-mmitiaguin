@@ -21,6 +21,10 @@ export class AddressService {
     private readonly api;
 
     constructor(apiKey: string) {
+        if (!apiKey) {
+            throw new Error('API Key not provided');
+        }
+        
         this.apiKey = apiKey;
         
         this.api = axios.create({
