@@ -19,11 +19,9 @@ function apiTransformation(item: any): AddressResult {
 export class AddressService {
     private readonly apiKey: string;
     private readonly api;
-    private readonly defaultLimit: number;
 
-    constructor(apiKey: string, options?: { defaultLimit?: number }) {
+    constructor(apiKey: string) {
         this.apiKey = apiKey;
-        this.defaultLimit = options?.defaultLimit || 5;
         
         this.api = axios.create({
             baseURL: 'https://api.tomtom.com/search/2',
