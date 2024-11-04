@@ -1,34 +1,41 @@
 import axios from 'axios';
-import { AustralianState, SearchParams, SearchResponse, AddressResult } from './types';
+import { AustralianState, SearchParams, SearchResponse, AddressResult, AddressProvider, ProviderConfig } from './types';
+import { PROVIDER_CONFIGS } from './address_provider';
 
 // Functions
-function apiTransformation(item: any): AddressResult {
-    return {
-        streetNumber: item.address.streetNumber || '',
-        street: item.address.streetName || '',
-        suburb: item.address.municipalitySubdivision || '',
-        city: item.address.municipality || '',
-        state: (item.address.countrySubdivision || 'VIC') as AustralianState,
-        postcode: item.address.postalCode || 0,
-        country: item.address.country || 'Australia',
-        score: item.score
-        
+function getNestedValue(obj: any, path: string[]): any {
+    return path.reduce((current, key) => (current && current[key] !== undefined ? current[key] : ''), obj);
+}
+
+function apiTransformation(item: any, mapping: ProviderConfig['responseMapping']): AddressResult {
+    const result: AddressResult = {
+        streetNumber: getNestedValue(item, mapping.streetNumber) || '',
+        street: getNestedValue(item, mapping.street) || '',
+        suburb: getNestedValue(item, mapping.suburb) || '',
+        city: getNestedValue(item, mapping.city) || '',
+        state: (getNestedValue(item, mapping.state) || 'VIC') as AustralianState,
+        postcode: getNestedValue(item, mapping.postcode) || '',
+        country: getNestedValue(item, mapping.country) || 'Australia',
+        score: getNestedValue(item, mapping.score) || 0
     };
+    return result;
 }
 
 export class AddressService {
     private readonly apiKey: string;
     private readonly api;
+    private readonly provider: ProviderConfig;
 
-    constructor(apiKey: string) {
+    constructor(apiKey: string, provider: AddressProvider = 'tomtom') {
         if (!apiKey) {
             throw new Error('API Key not provided');
         }
 
         this.apiKey = apiKey;
+        this.provider = PROVIDER_CONFIGS[provider];
         
         this.api = axios.create({
-            baseURL: 'https://api.tomtom.com/search/2',
+            baseURL: this.provider.baseURL,
             params: {
                 key: this.apiKey
             }
@@ -52,7 +59,9 @@ export class AddressService {
             });
             
             return {
-                results: response.data.results.map(apiTransformation),
+                results: response.data.results.map(
+                    (item: any) => apiTransformation(item, this.provider.responseMapping)
+                ),
                 total: response.data.summary.numResults
             };
         } catch (error) {
