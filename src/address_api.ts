@@ -24,7 +24,7 @@ export class AddressService {
         if (!apiKey) {
             throw new Error('API Key not provided');
         }
-        
+
         this.apiKey = apiKey;
         
         this.api = axios.create({
@@ -42,9 +42,10 @@ export class AddressService {
                 countrySet: 'AU',
                 limit: 5
             };
-    
+            const encodedQuery = encodeURIComponent(searchParams.query);
             const response = await this.api.get(`/search/${searchParams.query}.json`, {
                 params: {
+                    query: searchParams.query,
                     limit: searchParams.limit,
                     countrySet: searchParams.countrySet,
                     typeahead: true
