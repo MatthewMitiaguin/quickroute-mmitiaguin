@@ -3,6 +3,7 @@ import * as ssm from 'aws-cdk-lib/aws-ssm';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as iam from 'aws-cdk-lib/aws-iam';
 import * as nodejs from 'aws-cdk-lib/aws-lambda-nodejs';
+import * as apigateway from 'aws-cdk-lib/aws-apigateway';
 import { Construct } from 'constructs';
 import * as path from 'path';
 
@@ -31,6 +32,17 @@ export class QuickrouteCdkStack extends cdk.Stack {
       resources: [apiKeyParameter.parameterArn],
     }));
 
+    const api = new apigateway.RestApi(this, 'QuickRouteApi', {
+      restApiName: 'QuickRoute API',
+      description: 'API for QuickRoute address search'
+    });
+
+    const addresses = api.root.addResource('addresses');
+    addresses.addMethod('GET', new apigateway.LambdaIntegration(quickrouteLambda), {
+      requestParameters: {
+        'method.request.querystring.query': true 
+      }
+    });
 
     // Output 
 
@@ -44,6 +56,12 @@ export class QuickrouteCdkStack extends cdk.Stack {
     new cdk.CfnOutput(this, 'LambdaArn', {
       value: quickrouteLambda.functionArn,
       description: 'QuickRoute Lambda ARN',
+    });
+
+    // APi Gateway
+    new cdk.CfnOutput(this, 'ApiUrl', {
+      value: api.url,
+      description: 'API Gateway URL',
     });
   }
 }
