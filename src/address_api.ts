@@ -10,11 +10,23 @@ import { PROVIDER_CONFIGS } from "./address_provider";
 
 // Functions
 export function getNestedValue(obj: any, path: string[]): any {
-  return path.reduce(
-    (current, key) =>
-      current && current[key] !== undefined ? current[key] : "",
-    obj
-  );
+  return path.reduce((currentValue: any, currentKey: string): any => {
+    if(!currentValue) { // Check for valid object
+      return "";
+    }
+
+    // Check if key exists
+    const valueExists = currentValue[currentKey] !== undefined; 
+
+    // If exists return value
+    if(valueExists) {
+      return currentValue[currentKey];
+    }
+    else {
+      return ""
+    }
+
+  }, obj);
 }
 
 export function apiTransformation(
